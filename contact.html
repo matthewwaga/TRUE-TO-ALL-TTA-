@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact — True To All (TTA)</title>
+<meta name="description" content="Get in touch with True To All — order help, wholesale, and general enquiries.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a href="index.html" class="logo-stamp">
+      <span class="stamp-ring">TTA</span>
+      True To All
+    </a>
+    <nav class="main-nav" aria-label="Primary">
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="shop.html">Shop</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html" class="active">Contact</a></li>
+      </ul>
+    </nav>
+    <div class="header-actions">
+      <a href="cart.html" class="cart-link">CART (<span id="cart-count">0</span>)</a>
+      <button class="nav-toggle" aria-expanded="false" aria-label="Toggle menu">☰ MENU</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="section" style="padding-top:48px;">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Get In Touch</h2>
+        <span class="tag-label">We reply within 1 business day</span>
+      </div>
+
+      <div class="contact-layout">
+        <form class="contact-form" id="contact-form">
+          <div class="field-row">
+            <label for="c-name">Name</label>
+            <input type="text" id="c-name" required>
+          </div>
+          <div class="field-row">
+            <label for="c-email">Email</label>
+            <input type="email" id="c-email" required>
+          </div>
+          <div class="field-row">
+            <label for="c-subject">Subject</label>
+            <input type="text" id="c-subject" placeholder="Order help, wholesale, press…">
+          </div>
+          <div class="field-row">
+            <label for="c-message">Message</label>
+            <textarea id="c-message" required></textarea>
+          </div>
+          <button type="submit" class="btn">Send Message</button>
+          <div class="form-success" id="form-success">Message received — thanks for reaching out. We'll reply within 1 business day.</div>
+        </form>
+
+        <div class="contact-info-card">
+          <div class="row">
+            <span class="lbl">Studio</span>
+            <span>Kilimani, Nairobi, Kenya</span>
+          </div>
+          <div class="row">
+            <span class="lbl">Email</span>
+            <span>hello@truetoall.co.ke</span>
+          </div>
+          <div class="row">
+            <span class="lbl">Phone</span>
+            <span>+254 700 000 000</span>
+          </div>
+          <div class="row">
+            <span class="lbl">Hours</span>
+            <span>Mon–Sat, 9am–6pm EAT</span>
+          </div>
+          <div class="row">
+            <span class="lbl">Wholesale</span>
+            <span>Ask about bulk pricing on drops of 20+ units.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-bottom">
+      <span>© <span id="year"></span> True To All (TTA). Nairobi, Kenya.</span>
+      <span><a href="shop.html">Shop the catalog</a></span>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/products.js"></script>
+<script src="assets/cart.js"></script>
+<script src="assets/main.js"></script>
+<script>
+  document.getElementById("contact-form").addEventListener("submit", (e) => {
+    e.preventDefault();
+    document.getElementById("form-success").classList.add("show");
+    e.target.reset();
+  });
+</script>
+</body>
+</html>

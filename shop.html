@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shop — True To All (TTA)</title>
+<meta name="description" content="Browse the full True To All catalog: hoodies, tees, outerwear, bottoms, headwear and accessories.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a href="index.html" class="logo-stamp">
+      <span class="stamp-ring">TTA</span>
+      True To All
+    </a>
+    <nav class="main-nav" aria-label="Primary">
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="shop.html" class="active">Shop</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </nav>
+    <div class="header-actions">
+      <a href="cart.html" class="cart-link">CART (<span id="cart-count">0</span>)</a>
+      <button class="nav-toggle" aria-expanded="false" aria-label="Toggle menu">☰ MENU</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="section" style="padding-top:48px;">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Shop All</h2>
+        <span class="tag-label" id="result-count">09 pieces</span>
+      </div>
+
+      <div class="filter-bar" id="filter-bar">
+        <button class="filter-chip active" data-cat="All">All</button>
+        <button class="filter-chip" data-cat="Hoodies">Hoodies</button>
+        <button class="filter-chip" data-cat="Tees">Tees</button>
+        <button class="filter-chip" data-cat="Outerwear">Outerwear</button>
+        <button class="filter-chip" data-cat="Bottoms">Bottoms</button>
+        <button class="filter-chip" data-cat="Sweaters">Sweaters</button>
+        <button class="filter-chip" data-cat="Headwear">Headwear</button>
+        <button class="filter-chip" data-cat="Accessories">Accessories</button>
+      </div>
+
+      <div class="product-grid" id="shop-grid"></div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-logo">TTA</div>
+        <p style="color:rgba(239,234,224,0.7); max-width:32ch;">True To All — a Nairobi streetwear label built on real specs and real prices.</p>
+      </div>
+      <div>
+        <h4>Shop</h4>
+        <ul>
+          <li><a href="shop.html">All Products</a></li>
+          <li><a href="shop.html">Hoodies</a></li>
+          <li><a href="shop.html">Tees</a></li>
+          <li><a href="shop.html">Outerwear</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <ul>
+          <li><a href="about.html">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Support</h4>
+        <ul>
+          <li><a href="contact.html">Order Help</a></li>
+          <li><a href="cart.html">Track Cart</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="year"></span> True To All (TTA). Nairobi, Kenya.</span>
+      <span>Built as a static site — no backend required.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/products.js"></script>
+<script src="assets/cart.js"></script>
+<script src="assets/main.js"></script>
+<script>
+  const grid = document.getElementById("shop-grid");
+  const countEl = document.getElementById("result-count");
+
+  function renderGrid(cat){
+    const items = cat === "All" ? TTA_PRODUCTS : TTA_PRODUCTS.filter(p => p.cat === cat);
+    countEl.textContent = String(items.length).padStart(2, "0") + " piece" + (items.length === 1 ? "" : "s");
+    grid.innerHTML = items.map(p => `
+      <article class="tag-card">
+        <div class="tag-card-top">
+          <span>${p.sku}</span>
+          <span>${p.cat}</span>
+        </div>
+        <a href="product.html?id=${p.id}" class="tag-card-media">
+          <span class="glyph">${p.art}</span>
+          ${p.stock === "Low Stock" ? '<span class="stock-badge">Low Stock</span>' : ''}
+        </a>
+        <div class="tag-card-body">
+          <span class="cat">${p.cat}</span>
+          <h3><a href="product.html?id=${p.id}">${p.name}</a></h3>
+          <div class="tag-card-price">${formatKES(p.price)}</div>
+          <div class="tag-card-actions">
+            <a href="product.html?id=${p.id}" class="btn small">View</a>
+          </div>
+        </div>
+      </article>
+    `).join("");
+  }
+
+  document.getElementById("filter-bar").addEventListener("click", (e) => {
+    const btn = e.target.closest(".filter-chip");
+    if(!btn) return;
+    document.querySelectorAll(".filter-chip").forEach(c => c.classList.remove("active"));
+    btn.classList.add("active");
+    renderGrid(btn.dataset.cat);
+  });
+
+  renderGrid("All");
+</script>
+</body>
+</html>

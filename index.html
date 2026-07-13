@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>True To All (TTA) — Nairobi Streetwear</title>
+<meta name="description" content="True To All (TTA) is a Nairobi-based streetwear label. Hoodies, tees, outerwear and accessories built like the hang-tags they ship with.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a href="index.html" class="logo-stamp">
+      <span class="stamp-ring">TTA</span>
+      True To All
+    </a>
+    <nav class="main-nav" aria-label="Primary">
+      <ul>
+        <li><a href="index.html" class="active">Home</a></li>
+        <li><a href="shop.html">Shop</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </nav>
+    <div class="header-actions">
+      <a href="cart.html" class="cart-link">CART (<span id="cart-count">0</span>)</a>
+      <button class="nav-toggle" aria-expanded="false" aria-label="Toggle menu">☰ MENU</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="wrap">
+      <div class="hang-tag">
+        <div class="tag-hole"><div class="eyelet"></div></div>
+        <div>
+          <p class="eyebrow">Nairobi · Est. drop 001</p>
+          <h1>Every piece ships<br>with the <span class="accent">receipts.</span></h1>
+          <p class="lede">True To All is a Nairobi label built around one idea: the hang-tag doesn't lie. Real fabric weights, real stitch counts, real prices — printed on every garment we make.</p>
+          <div class="hero-ctas">
+            <a href="shop.html" class="btn">Shop the Drop</a>
+            <a href="about.html" class="btn ghost">Our Story</a>
+          </div>
+          <div class="hero-meta">
+            <span>SKU RANGE: TTA-001–009</span>
+            <span>ORIGIN: NAIROBI, KE</span>
+            <span>CHECKOUT: M-PESA</span>
+          </div>
+        </div>
+        <div class="hero-visual">
+          <div class="stamp-big">TTA<br>KE</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="featured">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Featured Pieces</h2>
+        <span class="tag-label">04 of 09 in catalog</span>
+      </div>
+      <div class="product-grid" id="featured-grid"></div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0;">
+    <div class="wrap">
+      <div class="values-grid">
+        <div class="value-card">
+          <span class="num-tag">FABRIC</span>
+          <h3>Weight on the label, not just the site</h3>
+          <p>Every listing states real GSM and fiber content — no vague "premium quality" copy.</p>
+        </div>
+        <div class="value-card">
+          <span class="num-tag">PRICE</span>
+          <h3>KES pricing, no conversions</h3>
+          <p>Priced for Nairobi from the start. What you see at checkout is what lands in your hand.</p>
+        </div>
+        <div class="value-card">
+          <span class="num-tag">PAY</span>
+          <h3>M-Pesa at checkout</h3>
+          <p>STK push to your phone, confirm, done. No card required for local orders.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-logo">TTA</div>
+        <p style="color:rgba(239,234,224,0.7); max-width:32ch;">True To All — a Nairobi streetwear label built on real specs and real prices.</p>
+      </div>
+      <div>
+        <h4>Shop</h4>
+        <ul>
+          <li><a href="shop.html">All Products</a></li>
+          <li><a href="shop.html">Hoodies</a></li>
+          <li><a href="shop.html">Tees</a></li>
+          <li><a href="shop.html">Outerwear</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <ul>
+          <li><a href="about.html">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Support</h4>
+        <ul>
+          <li><a href="contact.html">Order Help</a></li>
+          <li><a href="cart.html">Track Cart</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="year"></span> True To All (TTA). Nairobi, Kenya.</span>
+      <span>Built as a static site — no backend required.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/products.js"></script>
+<script src="assets/cart.js"></script>
+<script src="assets/main.js"></script>
+<script>
+  const featured = TTA_PRODUCTS.slice(0, 4);
+  const grid = document.getElementById("featured-grid");
+  grid.innerHTML = featured.map(p => `
+    <article class="tag-card">
+      <div class="tag-card-top">
+        <span>${p.sku}</span>
+        <span>${p.cat}</span>
+      </div>
+      <a href="product.html?id=${p.id}" class="tag-card-media">
+        <span class="glyph">${p.art}</span>
+        ${p.stock === "Low Stock" ? '<span class="stock-badge">Low Stock</span>' : ''}
+      </a>
+      <div class="tag-card-body">
+        <span class="cat">${p.cat}</span>
+        <h3><a href="product.html?id=${p.id}">${p.name}</a></h3>
+        <div class="tag-card-price">${formatKES(p.price)}</div>
+        <div class="tag-card-actions">
+          <a href="product.html?id=${p.id}" class="btn small">View</a>
+        </div>
+      </div>
+    </article>
+  `).join("");
+</script>
+</body>
+</html>

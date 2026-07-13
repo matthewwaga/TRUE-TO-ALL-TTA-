@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title id="page-title">Product — True To All (TTA)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a href="index.html" class="logo-stamp">
+      <span class="stamp-ring">TTA</span>
+      True To All
+    </a>
+    <nav class="main-nav" aria-label="Primary">
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="shop.html" class="active">Shop</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </nav>
+    <div class="header-actions">
+      <a href="cart.html" class="cart-link">CART (<span id="cart-count">0</span>)</a>
+      <button class="nav-toggle" aria-expanded="false" aria-label="Toggle menu">☰ MENU</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="section" style="padding-top:48px;">
+    <div class="wrap" id="product-root">
+      <!-- populated by JS -->
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-bottom">
+      <span>© <span id="year"></span> True To All (TTA). Nairobi, Kenya.</span>
+      <span><a href="shop.html">Back to shop</a></span>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/products.js"></script>
+<script src="assets/cart.js"></script>
+<script src="assets/main.js"></script>
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get("id");
+  const product = TTA_PRODUCTS.find(p => p.id === id) || TTA_PRODUCTS[0];
+  document.getElementById("page-title").textContent = product.name + " — True To All (TTA)";
+
+  let selectedSize = product.sizes[0];
+  let qty = 1;
+
+  function render(){
+    document.getElementById("product-root").innerHTML = `
+      <div class="product-detail">
+        <div class="product-media-main">
+          <span class="glyph-lg">${product.art}</span>
+        </div>
+        <div class="product-info">
+          <span class="cat">${product.cat} · ${product.stock}</span>
+          <h1>${product.name}</h1>
+          <div class="price">${formatKES(product.price)}</div>
+          <p class="desc">${product.desc}</p>
+
+          <div class="option-group">
+            <label class="title">Size</label>
+            <div class="size-options" id="size-options">
+              ${product.sizes.map(s => `<button class="size-btn ${s === selectedSize ? 'selected' : ''}" data-size="${s}">${s}</button>`).join("")}
+            </div>
+          </div>
+
+          <div class="option-group">
+            <label class="title">Quantity</label>
+            <div class="qty-row">
+              <button id="qty-minus" aria-label="Decrease quantity">−</button>
+              <span id="qty-val">${qty}</span>
+              <button id="qty-plus" aria-label="Increase quantity">+</button>
+            </div>
+          </div>
+
+          <div class="product-actions">
+            <button class="btn" id="add-to-cart-btn">Add to Cart</button>
+            <a href="cart.html" class="btn ghost">View Cart</a>
+          </div>
+
+          <div class="product-tag-info">
+            <span>SKU: ${product.sku}</span>
+            <span>CARE: ${product.care}</span>
+          </div>
+        </div>
+      </div>
+    `;
+
+    document.getElementById("size-options").addEventListener("click", (e) => {
+      const btn = e.target.closest(".size-btn");
+      if(!btn) return;
+      selectedSize = btn.dataset.size;
+      document.querySelectorAll(".size-btn").forEach(b => b.classList.remove("selected"));
+      btn.classList.add("selected");
+    });
+
+    document.getElementById("qty-minus").addEventListener("click", () => {
+      qty = Math.max(1, qty - 1);
+      document.getElementById("qty-val").textContent = qty;
+    });
+    document.getElementById("qty-plus").addEventListener("click", () => {
+      qty = Math.min(10, qty + 1);
+      document.getElementById("qty-val").textContent = qty;
+    });
+
+    document.getElementById("add-to-cart-btn").addEventListener("click", () => {
+      ttaAddToCart(product, selectedSize, qty);
+      ttaShowToast(`Added ${qty} × ${product.name} (${selectedSize}) to cart`);
+    });
+  }
+
+  render();
+</script>
+</body>
+</html>

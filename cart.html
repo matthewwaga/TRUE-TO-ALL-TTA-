@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cart & Checkout — True To All (TTA)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a href="index.html" class="logo-stamp">
+      <span class="stamp-ring">TTA</span>
+      True To All
+    </a>
+    <nav class="main-nav" aria-label="Primary">
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="shop.html">Shop</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </nav>
+    <div class="header-actions">
+      <a href="cart.html" class="cart-link active">CART (<span id="cart-count">0</span>)</a>
+      <button class="nav-toggle" aria-expanded="false" aria-label="Toggle menu">☰ MENU</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="section" style="padding-top:48px;">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Your Cart</h2>
+        <span class="tag-label">M-Pesa checkout</span>
+      </div>
+
+      <div id="cart-root"></div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-bottom">
+      <span>© <span id="year"></span> True To All (TTA). Nairobi, Kenya.</span>
+      <span><a href="shop.html">Continue shopping</a></span>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/products.js"></script>
+<script src="assets/cart.js"></script>
+<script src="assets/main.js"></script>
+<script>
+  const root = document.getElementById("cart-root");
+  let checkoutOpen = false;
+
+  function renderCart(){
+    const cart = ttaGetCart();
+    const totals = ttaCartTotals();
+
+    if(cart.length === 0){
+      root.innerHTML = `
+        <div class="empty-state">
+          <div class="glyph">🏷️</div>
+          <h3 style="font-family:var(--display); margin-bottom:10px;">Your cart is empty</h3>
+          <p style="color:var(--olive); margin-bottom:22px;">Nothing on the rack yet — go find something worth tagging.</p>
+          <a href="shop.html" class="btn">Browse the Shop</a>
+        </div>
+      `;
+      return;
+    }
+
+    root.innerHTML = `
+      <div class="cart-layout">
+        <div id="cart-items">
+          ${cart.map(item => `
+            <div class="cart-item" data-id="${item.id}" data-size="${item.size}">
+              <div class="glyph-sm">${item.art || ''}</div>
+              <div class="meta">
+                <div class="name">${item.name}</div>
+                <div class="sub">SIZE ${item.size} · SKU ${item.sku}</div>
+                <div class="qty-row" style="margin-top:8px;">
+                  <button class="qty-minus" aria-label="Decrease quantity">−</button>
+                  <span>${item.qty}</span>
+                  <button class="qty-plus" aria-label="Increase quantity">+</button>
+                </div>
+              </div>
+              <div class="price">${formatKES(item.price * item.qty)}</div>
+              <button class="remove">Remove</button>
+            </div>
+          `).join("")}
+        </div>
+
+        <div>
+          <div class="cart-summary">
+            <h2>Order Summary</h2>
+            <div class="summary-row"><span>Subtotal</span><span>${formatKES(totals.subtotal)}</span></div>
+            <div class="summary-row"><span>Shipping</span><span>${totals.shipping === 0 ? "Free" : formatKES(totals.shipping)}</span></div>
+            <div class="summary-row total"><span>Total</span><span>${formatKES(totals.total)}</span></div>
+            <button class="btn" id="checkout-btn" style="width:100%; justify-content:center; margin-top:18px;">Checkout with M-Pesa</button>
+          </div>
+
+          <div class="checkout-panel" id="checkout-panel" style="${checkoutOpen ? '' : 'display:none;'}">
+            <div class="mpesa-badge">M-PESA · STK PUSH</div>
+            <div class="field-row">
+              <label for="mpesa-phone">M-Pesa phone number</label>
+              <input type="tel" id="mpesa-phone" placeholder="07XX XXX XXX" inputmode="numeric">
+            </div>
+            <div class="field-row">
+              <label for="mpesa-name">Full name</label>
+              <input type="text" id="mpesa-name" placeholder="As on delivery note">
+            </div>
+            <button class="btn" id="send-stk-btn" style="width:100%; justify-content:center;">Send Payment Request — ${formatKES(totals.total)}</button>
+            <div class="stk-status" id="stk-status"></div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    document.getElementById("cart-items").addEventListener("click", (e) => {
+      const row = e.target.closest(".cart-item");
+      if(!row) return;
+      const id = row.dataset.id;
+      const size = row.dataset.size;
+      if(e.target.classList.contains("qty-minus")) ttaUpdateQty(id, size, -1);
+      if(e.target.classList.contains("qty-plus")) ttaUpdateQty(id, size, 1);
+      if(e.target.classList.contains("remove")) ttaRemoveFromCart(id, size);
+      renderCart();
+    });
+
+    const checkoutBtn = document.getElementById("checkout-btn");
+    if(checkoutBtn){
+      checkoutBtn.addEventListener("click", () => {
+        checkoutOpen = true;
+        document.getElementById("checkout-panel").style.display = "block";
+        document.getElementById("checkout-panel").scrollIntoView({ behavior: "smooth", block: "center" });
+      });
+    }
+
+    const sendBtn = document.getElementById("send-stk-btn");
+    if(sendBtn){
+      sendBtn.addEventListener("click", () => {
+        const phone = document.getElementById("mpesa-phone").value.trim();
+        const name = document.getElementById("mpesa-name").value.trim();
+        const statusEl = document.getElementById("stk-status");
+        const phonePattern = /^0?7\d{8}$/;
+
+        if(!name || !phonePattern.test(phone.replace(/\s/g, ""))){
+          statusEl.className = "stk-status show";
+          statusEl.style.color = "var(--stitch)";
+          statusEl.style.borderColor = "var(--stitch)";
+          statusEl.textContent = "Enter your name and a valid Safaricom number (e.g. 0712 345 678).";
+          return;
+        }
+
+        sendBtn.disabled = true;
+        sendBtn.textContent = "Sending STK push…";
+        statusEl.className = "stk-status show";
+        statusEl.style.color = "var(--olive)";
+        statusEl.style.borderColor = "var(--olive)";
+        statusEl.textContent = "Check your phone for the M-Pesa prompt and enter your PIN to confirm.";
+
+        setTimeout(() => {
+          statusEl.className = "stk-status show success";
+          statusEl.textContent = "Payment confirmed. Order placed — a confirmation SMS is on its way. (Demo checkout — no real payment was taken.)";
+          sendBtn.textContent = "Payment Confirmed";
+          localStorage.removeItem(TTA_CART_KEY);
+          ttaUpdateCartCount();
+        }, 2200);
+      });
+    }
+  }
+
+  renderCart();
+</script>
+</body>
+</html>
